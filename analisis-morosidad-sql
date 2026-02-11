@@ -1,0 +1,39 @@
+-- Crear tabla
+CREATE TABLE Cartera (
+    id_cliente INT,
+    nombre VARCHAR(50),
+    saldo DECIMAL(12,2),
+    dias_mora INT
+);
+
+-- Insertar datos simulados
+INSERT INTO Cartera VALUES
+(1, 'Cliente A', 800000, 0),
+(2, 'Cliente B', 500000, 45),
+(3, 'Cliente C', 1200000, 10),
+(4, 'Cliente D', 400000, 60),
+(5, 'Cliente E', 900000, 5);
+
+-- Clasificación de riesgo
+SELECT 
+    nombre,
+    saldo,
+    dias_mora,
+    CASE 
+        WHEN dias_mora >= 30 THEN 'ALTO RIESGO'
+        WHEN dias_mora BETWEEN 1 AND 29 THEN 'RIESGO MEDIO'
+        ELSE 'AL DIA'
+    END AS estado_riesgo
+FROM Cartera;
+
+-- Monto total en riesgo (clientes con mora >= 30 días)
+SELECT 
+    SUM(saldo) AS monto_en_riesgo
+FROM Cartera
+WHERE dias_mora >= 30;
+
+-- Porcentaje de cartera en riesgo
+SELECT 
+    (SUM(CASE WHEN dias_mora >= 30 THEN saldo ELSE 0 END) * 100.0 
+     / SUM(saldo)) AS porcentaje_en_riesgo
+FROM Cartera;
